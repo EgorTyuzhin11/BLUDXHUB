@@ -1,619 +1,400 @@
-local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/Consistt/Ui/main/UnLeaked"))()
-local MyName = library:GetUsername()
-local Players = game:GetService("Players")
-local Player = Players.LocalPlayer
-local LocalPlayer = Players.LocalPlayer
-local MyCFrame = LocalPlayer.Character.HumanoidRootPart.CFrame
-local Character = Player.Character or Player.CharacterAdded:Wait()
-local UIS = game:GetService("UserInputService")
-local Mouse = LocalPlayer:GetMouse()
-
-local isDev = {
-    ["xsxBLUDX"] = true,
-}
-
-if isDev[MyName] then
-    library.rank = "Разработчик"
-else
-    library.rank = "Пользователь"
-end
-
-library.version = "1.2"
-
-local Wm = library:Watermark("BLUDXHUB | v" .. library.version ..  " | " .. MyName .. " | Ранг: " .. library.rank)
-local FpsWm = Wm:AddWatermark("FPS: " .. library.fps)
-coroutine.wrap(function()
-    while wait(.75) do
-        FpsWm:Text("FPS: " .. library.fps)
-    end
-end)()
-
-local fr3yaWm = Wm:AddWatermark("fr3ya")
-
-local Notif = library:InitNotifications()
-
-for i = 20,0,-1 do 
-    task.wait(0.05)
-    local LoadingXSX = Notif:Notify("Информация: Загрузка BLUDXHUB.", 3, "information")
-end 
-
-library.title = "BLUDXHUB"
-
-library:Introduction()
-wait(1)
-local Init = library:Init()
-
-local MainTab = Init:NewTab("Main")
-
-local SlidersMainSection = MainTab:NewSection("Слайдеры")
-
--- WalkSpeed Slider
-local WalkSpeedSlider = MainTab:NewSlider("WalkSpeed", " Увеличить скорость бега", true, "/", {min = 16, max = 500, default = 16}, function(WSd)
-    local character = game.Players.LocalPlayer.Character
-    if character and character:FindFirstChildOfClass("Humanoid") then
-        character:FindFirstChildOfClass("Humanoid").WalkSpeed = WSd
-    end
-end)
-
--- JumpPower Slider
-local JumpPowerSlider = MainTab:NewSlider("JumpPower", " Увеличить высоту прыжка", true, "/", {min = 50, max = 250, default = 50}, function(JPr)
-    local character = game.Players.LocalPlayer.Character
-    if character and character:FindFirstChildOfClass("Humanoid") then
-        character:FindFirstChildOfClass("Humanoid").JumpPower = JPr
-    end
-end)
-
-local OtherMainSection = MainTab:NewSection("Другое")
-
-
--- Hide Name (Only in WaterMark)
-local HideNameToggle = MainTab:NewToggle("Скрыть ник", false, function(state)
-    if state then
-        Wm:Text("BLUDXHUB | v" .. library.version ..  " | Hidden | Ранг: " .. library.rank)
-    else
-        Wm:Text("BLUDXHUB | v" .. library.version ..  " | " ..MyName.. " | Ранг: " .. library.rank)
-    end
-end)
-
--- Infinity Jump
-local ijConnection
-
-local InfinityJumpToggle = MainTab:NewToggle("Infinity Jump", false, function(enabled)
-    if enabled then
-        ijConnection = UIS.JumpRequest:Connect(function()
-            local character = Player.Character
-            if character and character:FindFirstChildOfClass("Humanoid") then
-                character:FindFirstChildOfClass("Humanoid"):ChangeState(Enum.HumanoidStateType.Jumping)
-            end
-        end)
-    else
-        if ijConnection then
-            ijConnection:Disconnect()
-            ijConnection = nil
-        end
-    end
-end)
-
--- Noclip Toggle
-local noclipConnection
-
-local NoclipToggle = MainTab:NewToggle("Noclip", false, function(value)
-    if value then
-        noclipConnection = game:GetService("RunService").Stepped:Connect(function()
-            local character = LocalPlayer.Character
-            if character then
-                for _, part in pairs(character:GetDescendants()) do
-                    if part:IsA("BasePart") and part.CanCollide then
-                        part.CanCollide = false
-                    end
-                end
-            end
-        end)
-    else
-        if noclipConnection then
-            noclipConnection:Disconnect()
-            noclipConnection = nil
-        end
-
-        local character = LocalPlayer.Character
-        if character then
-            for _, part in pairs(character:GetDescendants()) do
-                if part:IsA("BasePart") then
-                    part.CanCollide = true
-                end
-            end
-        end
-    end
-end)
-
--- Is Dev Section
-if library.rank == "Разработчик" then
-    local IsDevSection = MainTab:NewSection("Для разработчиков")
-    local IYButton = MainTab:NewButton("Infinity Yield", function()
-        loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
-    end)
-end
---
-local GameTab = Init:NewTab("This Game")
-
--- Tower Of Hell (If)
-if game.PlaceId == 1962086868 then
-    local GameTOHSection = GameTab:NewSection("Tower Of Hell (BIG RISK)")
-
-    local LobbyCF = workspace.tower.sections.lobby.floor.SpawnLocation.CFrame
-    local FinalCF = workspace.tower.sections.finish.steps:GetChildren()[4]
-
-    GameTab:NewButton("Teleport to end", function()
-        local char = game.Players.LocalPlayer.Character
-        if char and char:FindFirstChild("HumanoidRootPart") then
-            local TpEndPosition = FinalCF.Position + Vector3.new(0, 2, 0)
-            char.HumanoidRootPart.CFrame = CFrame.new(TpEndPosition)
-        end
-    end)
-
-    GameTab:NewButton("Tp to end and back", function()
-    local char = game.Players.LocalPlayer.Character
-    if char and char:FindFirstChild("HumanoidRootPart") then
-        local root = char.HumanoidRootPart
-        local original1CF = root.CFrame
-        local target1CF = CFrame.new(FinalCF.Position + Vector3.new(0, 5, 0))
-
-        root.CFrame = target1CF
-        task.wait(0.2)
-        root.CFrame = original1CF
-    end
-    end)
-    GameTab:NewButton("Teleport to lobby", function()
-        local char = game.Players.LocalPlayer.Character
-        if char and char:FindFirstChild("HumanoidRootPart") then
-            local TPLobbyPosition = LobbyCF.Position + Vector3.new(0, 4, 0)
-            char.HumanoidRootPart.CFrame = CFrame.new(TPLobbyPosition)
-        end
-    end)
-end
-
--- Teleport Tab
-local TPTab = Init:NewTab("Teleport")
-
-local TPSection = TPTab:NewSection("")
-
--- ClickTp Toggle
-local clickTPConnection
-local isAltHeld = false
-
-local Players = game:GetService("Players")
-local UIS = game:GetService("UserInputService")
-local LocalPlayer = Players.LocalPlayer
-local Mouse = LocalPlayer:GetMouse()
-
-local clickTPConnection
-local altBeginConnection
-local altEndConnection
-local isAltHeld = false
-
-local ClickTpToggle = TPTab:NewToggle("Click TP", false, function(enabled)
-    if enabled then
-        -- Подключаем события на Alt
-        altBeginConnection = UIS.InputBegan:Connect(function(input, gameProcessed)
-            if input.KeyCode == Enum.KeyCode.LeftAlt then
-                isAltHeld = true
-            end
-        end)
-
-        altEndConnection = UIS.InputEnded:Connect(function(input)
-            if input.KeyCode == Enum.KeyCode.LeftAlt then
-                isAltHeld = false
-            end
-        end)
-
-        -- Обработка клика мыши при зажатом Alt
-        clickTPConnection = UIS.InputBegan:Connect(function(input, gameProcessed)
-            if gameProcessed then return end
-            if input.UserInputType == Enum.UserInputType.MouseButton1 and isAltHeld then
-                local character = LocalPlayer.Character
-                local root = character and character:FindFirstChild("HumanoidRootPart")
-                if root and Mouse then
-                    local targetPosition = Mouse.Hit.Position
-                    root.CFrame = CFrame.new(targetPosition + Vector3.new(0, 5, 0))
-                end
-            end
-        end)
-    else
-        -- Отключаем все соединения
-        if clickTPConnection then
-            clickTPConnection:Disconnect()
-            clickTPConnection = nil
-        end
-        if altBeginConnection then
-            altBeginConnection:Disconnect()
-            altBeginConnection = nil
-        end
-        if altEndConnection then
-            altEndConnection:Disconnect()
-            altEndConnection = nil
-        end
-        isAltHeld = false
-    end
-end)
-
--- Friend Menu
-
-local FriendTab = Init:NewTab("FriendMenu")
-local FriendSection = FriendTab:NewSection("Управление друзьями")
-
-local currentFriend = nil
-local spectateConnection = nil
-
-local function stopSpectate()
-    if spectateConnection then
-        spectateConnection:Disconnect()
-        spectateConnection = nil
-        workspace.CurrentCamera.CameraType = Enum.CameraType.Custom
-    end
-end
-
-local FriendText = FriendTab:NewTextbox(
-    "Добавить друга",
-    "Введите ник друга",
-    "Ник",
-    "all",
-    "medium",
-    true,
-    false,
-    function(val)
-        local input = val:gsub("%s+", "") -- Удаляем пробелы
-        if input == "" then return end
-
-        for _, player in ipairs(Players:GetPlayers()) do
-            if player.Name:lower() == input:lower() then
-                currentFriend = player.Name
-                Notif:Notify("Текущий друг: " .. currentFriend, 4, "success")
-                stopSpectate() -- выключаем слежение, если друг меняется
-                return
-            end
-        end
-
-        Notif:Notify("Игрок '" .. input .. "' не найден на сервере.", 4, "error")
-    end
-)
-
--- Кнопка телепортации
-local teleportBtn = FriendTab:NewButton("Teleport to friend", function()
-    if not currentFriend then
-        Notif:Notify("Сначала выберите друга.", 4, "alert")
-        return
-    end
-
-    local localChar = Players.LocalPlayer.Character
-    local targetPlayer = Players:FindFirstChild(currentFriend)
-    local targetChar = targetPlayer and targetPlayer.Character
-
-    if localChar and targetChar and targetChar:FindFirstChild("HumanoidRootPart") then
-        localChar:MoveTo(targetChar.HumanoidRootPart.Position + Vector3.new(0, 3, 0))
-    else
-        Notif:Notify("Невозможно телепортироваться к " .. currentFriend, 4, "error")
-    end
-end)
-
--- Кнопка spectate
-local spectateBtn = FriendTab:NewButton("Spectate friend", function()
-    if not currentFriend then
-        Notif:Notify("Сначала выберите друга.", 4, "alert")
-        return
-    end
-
-    local targetPlayer = Players:FindFirstChild(currentFriend)
-    local cam = workspace.CurrentCamera
-
-    if not spectateConnection then
-        if not targetPlayer or not targetPlayer.Character or not targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
-            Notif:Notify("Невозможно следить за " .. currentFriend, 4, "error")
-            return
-        end
-
-        Notif:Notify("Начато наблюдение за " .. currentFriend, 4, "information")
-        cam.CameraType = Enum.CameraType.Scriptable
-        spectateConnection = game:GetService("RunService").RenderStepped:Connect(function()
-            if targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
-                cam.CFrame = targetPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0, 5, 10)
-            else
-                Notif:Notify(currentFriend .. " вышел или исчез.", 4, "error")
-                stopSpectate()
-            end
-        end)
-
-        Players.PlayerRemoving:Connect(function(player)
-            if currentFriend and player.Name == currentFriend then
-                Notif:Notify(currentFriend .. " покинул игру. Слежение остановлено.", 4, "error")
-                stopSpectate()
-                currentFriend = nil
-            end
-        end)
-
-        
-    else
-        Notif:Notify("Наблюдение остановлено", 4, "information")
-        stopSpectate()
-    end
-end)
-
-local deleteBtn = FriendTab:NewButton("Delete friend", function()
-    if currentFriend then
-        Notif:Notify("Удален друг: " .. currentFriend, 4, "notification")
-        stopSpectate()
-        currentFriend = nil
-    else
-        Notif:Notify("Нет активного друга", 4, "alert")
-    end
-end)
-
--- ESP SETTINGS
--- ESP Tab
-local ESPTab = Init:NewTab("ESP")
-local ESPSection = ESPTab:NewSection("Настройки ESP")
-
-local ESP = {
-    Box = false,
-    Name = false,
-    Tracer = false,
-    Health = false,
-    Distance = false,
-}
-
--- Отдельная секция для "Только для друга"
-
-local FriendOnly = {
-    Box = false,
-    Name = false,
-    Tracer = false,
-    Health = false,
-    Distance = false,
-}
-
-local RunService = game:GetService("RunService")
-local Camera = workspace.CurrentCamera
-local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
-
-local espObjects = {}
-
-local friendColor = Color3.fromRGB(0, 255, 0)
-local defaultColor = Color3.fromRGB(255, 0, 0)
-
-local function createESPForPlayer(plr)
-    if plr == LocalPlayer then return end
-
-    local box = Drawing.new("Square")
-    box.Visible = false
-    box.Color = defaultColor
-    box.Thickness = 2
-    box.Filled = false
-
-    local nameText = Drawing.new("Text")
-    nameText.Visible = false
-    nameText.Color = Color3.new(1,1,1)
-    nameText.Center = true
-    nameText.Outline = true
-    nameText.OutlineColor = Color3.new(0,0,0)
-    nameText.Size = 16
-    nameText.Font = 2
-
-    local tracer = Drawing.new("Line")
-    tracer.Visible = false
-    tracer.Color = defaultColor
-    tracer.Thickness = 1
-
-    local healthText = Drawing.new("Text")
-    healthText.Visible = false
-    healthText.Color = Color3.new(1,0,0)
-    healthText.Center = true
-    healthText.Outline = true
-    healthText.OutlineColor = Color3.new(0,0,0)
-    healthText.Size = 16
-    healthText.Font = 2
-
-    local distanceText = Drawing.new("Text")
-    distanceText.Visible = false
-    distanceText.Color = Color3.new(1,1,1)
-    distanceText.Center = true
-    distanceText.Outline = true
-    distanceText.OutlineColor = Color3.new(0,0,0)
-    distanceText.Size = 16
-    distanceText.Font = 2
-
-    espObjects[plr] = {
-        Box = box,
-        Name = nameText,
-        Tracer = tracer,
-        Health = healthText,
-        Distance = distanceText,
+local library = loadstring(game:GetObjects("rbxassetid://7657867786")[1].Source)()
+local Wait = library.subs.Wait
+local PepsisWorld = library:CreateWindow({
+    Name = "BLUDXHUB",
+    Themeable = {
+        Info = "Discord Server: VzYTJ7Y"
     }
-end
+})
 
-local function removeESPForPlayer(plr)
-    local esp = espObjects[plr]
-    if esp then
-        for _, obj in pairs(esp) do
-            obj:Remove()
-        end
-        espObjects[plr] = nil
+local GeneralTab = PepsisWorld:CreateTab({
+    Name = "Главное"
+})
+
+local SlidersMainSection = GeneralTab:CreateSection({
+    Name = "Слайдеры"
+})
+
+-- Слайдеры
+local Player = game.Players.LocalPlayer
+local character = Player.Character or Player.CharacterAdded:Wait()
+local humanoid = character:WaitForChild("Humanoid")
+
+SlidersMainSection:AddSlider({
+    Name = "WalkSpeed",
+    Min = 8,
+    Max = 100,
+    Value = humanoid.WalkSpeed,
+    Callback = function(value)
+        humanoid.WalkSpeed = value
     end
-end
+})
 
-for _, plr in pairs(Players:GetPlayers()) do
-    createESPForPlayer(plr)
-end
+SlidersMainSection:AddSlider({
+    Name = "JumpPower",
+    Min = 20,
+    Max = 200,
+    Value = humanoid.JumpPower,
+    Callback = function(value)
+        humanoid.JumpPower = value
+    end
+})
 
-Players.PlayerAdded:Connect(function(plr)
-    createESPForPlayer(plr)
+local infiniteJumpEnabled = false
+
+local OtherMainSection = GeneralTab:CreateSection({
+    Name = "Остальное"
+})
+
+OtherMainSection:AddToggle({
+    Name = "Безграничный прыжок",
+    Flag = "InfiniteJump",
+    Value = false,
+    Callback = function(state)
+        infiniteJumpEnabled = state
+    end
+})
+
+OtherMainSection:AddButton({
+    Name = "Загрузить Infinity Yield",
+    Callback = function()
+        loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
+    end
+})
+
+game:GetService("UserInputService").JumpRequest:Connect(function()
+    if infiniteJumpEnabled then
+        local player = game.Players.LocalPlayer
+        local character = player.Character
+        if character and character:FindFirstChildOfClass("Humanoid") then
+            character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+        end
+    end
 end)
 
-Players.PlayerRemoving:Connect(function(plr)
-    removeESPForPlayer(plr)
-end)
+local TeleportTab = PepsisWorld:CreateTab({ Name = "Телепорт" })
+local teleportSection = TeleportTab:CreateSection({ Name = "Teleport Controls" })
 
-RunService.RenderStepped:Connect(function()
-    for plr, esp in pairs(espObjects) do
-        local char = plr.Character
-        local hrp = char and char:FindFirstChild("HumanoidRootPart")
-        local humanoid = char and char:FindFirstChildOfClass("Humanoid")
-        if hrp and humanoid and humanoid.Health > 0 then
-            local pos, onScreen = Camera:WorldToViewportPoint(hrp.Position)
-            if onScreen then
-                local head = char:FindFirstChild("Head")
-                local headPos, headOnScreen = head and Camera:WorldToViewportPoint(head.Position) or pos, true
+local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+local player = game.Players.LocalPlayer
+local mouse = player:GetMouse()
 
-                local height = (pos.Y - headPos.Y)
-                local width = height / 2
+-- Переменные
+local clickTPEnabled = false
+local autoFollowEnabled = false
+local autoFollowTarget = nil
+local teleportName = ""
+local coordX, coordY, coordZ = "", "", ""
 
-                local isFriend = (currentFriend == plr.Name)
-                local color = isFriend and friendColor or defaultColor
+-- Click TP (Ctrl + ЛКМ)
+teleportSection:AddToggle({
+    Name = "Click TP (зажать Ctrl + ЛКМ)",
+    Flag = "Teleport_ClickTP",
+    Value = false,
+    Callback = function(state)
+        clickTPEnabled = state
+    end
+})
 
-                -- Box
-                esp.Box.Visible = ESP.Box and (not FriendOnly.Box or isFriend)
-                esp.Box.Color = color
-                esp.Box.Position = Vector2.new(headPos.X - width/2, headPos.Y)
-                esp.Box.Size = Vector2.new(width, height)
-
-                -- Name
-                esp.Name.Visible = ESP.Name and (not FriendOnly.Name or isFriend)
-                esp.Name.Text = plr.Name
-                esp.Name.Position = Vector2.new(headPos.X, headPos.Y - 15)
-
-                -- Tracer
-                esp.Tracer.Visible = ESP.Tracer and (not FriendOnly.Tracer or isFriend)
-                esp.Tracer.Color = color
-                esp.Tracer.From = Vector2.new(Camera.ViewportSize.X/2, Camera.ViewportSize.Y)
-                esp.Tracer.To = Vector2.new(pos.X, pos.Y)
-
-                -- Health
-                esp.Health.Visible = ESP.Health and (not FriendOnly.Health or isFriend)
-                esp.Health.Text = math.floor(humanoid.Health) .. " HP"
-                esp.Health.Position = Vector2.new(headPos.X, headPos.Y + height + 5)
-
-                -- Distance
-                esp.Distance.Visible = ESP.Distance and (not FriendOnly.Distance or isFriend)
-                local dist = (hrp.Position - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
-                esp.Distance.Text = tostring(math.floor(dist)) .. " метров"
-                esp.Distance.Position = Vector2.new(headPos.X, headPos.Y + height + 20)
-            else
-                esp.Box.Visible = false
-                esp.Name.Visible = false
-                esp.Tracer.Visible = false
-                esp.Health.Visible = false
-                esp.Distance.Visible = false
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+    if gameProcessed then return end
+    if clickTPEnabled and input.UserInputType == Enum.UserInputType.MouseButton1 then
+        if UserInputService:IsKeyDown(Enum.KeyCode.LeftControl) or UserInputService:IsKeyDown(Enum.KeyCode.RightControl) then
+            if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+                local pos = mouse.Hit.p
+                player.Character.HumanoidRootPart.CFrame = CFrame.new(pos + Vector3.new(0, 3, 0))
             end
-        else
-            esp.Box.Visible = false
-            esp.Name.Visible = false
-            esp.Tracer.Visible = false
-            esp.Health.Visible = false
-            esp.Distance.Visible = false
         end
     end
 end)
--- Friend only
+
+-- Телепорт к игроку по нику из текстбокса
+teleportSection:AddTextbox({
+    Name = "Ник для телепорта",
+    Flag = "Teleport_ToName",
+    Text = "",
+    Callback = function(text)
+        teleportName = text
+    end
+})
+
+teleportSection:AddButton({
+    Name = "Телепортироваться к игроку",
+    Callback = function()
+        local targetPlayer = game.Players:FindFirstChild(teleportName)
+        if targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
+            player.Character.HumanoidRootPart.CFrame = targetPlayer.Character.HumanoidRootPart.CFrame + Vector3.new(0, 3, 0)
+        else
+            warn("Игрок не найден или отсутствует HumanoidRootPart")
+        end
+    end
+})
+
+-- Телепорт к ближайшему игроку
+teleportSection:AddButton({
+    Name = "Телепорт к ближайшему игроку",
+    Callback = function()
+        local closestPlayer = nil
+        local shortestDistance = math.huge
+        local hrp = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+        if not hrp then return end
+
+        for _, plr in pairs(game.Players:GetPlayers()) do
+            if plr ~= player and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
+                local dist = (plr.Character.HumanoidRootPart.Position - hrp.Position).Magnitude
+                if dist < shortestDistance then
+                    shortestDistance = dist
+                    closestPlayer = plr
+                end
+            end
+        end
+
+        if closestPlayer then
+            player.Character.HumanoidRootPart.CFrame = closestPlayer.Character.HumanoidRootPart.CFrame + Vector3.new(0, 3, 0)
+        else
+            warn("Ближайший игрок не найден")
+        end
+    end
+})
 
 
--- Box
-local BoxFriend = ESPTab:NewToggle("Box только для друга", false, function(state)
-    FriendOnly.Box = state
-end)
-BoxFriend:Hide()
-local BoxToggle = ESPTab:NewToggle("Box", false, function(state)
-    ESP.Box = state
-    if state then
-        BoxFriend:Show()
-    else
-        BoxFriend:Set(false)
-        BoxFriend:Hide()
-        FriendOnly.Box = false
+-- Вкладка Buildings и секции
+local BuildingsTab = PepsisWorld:CreateTab({ Name = "Постройки" })
+local BuildSection = BuildingsTab:CreateSection({ Name = "Создать" })
+local SizeSection = BuildingsTab:CreateSection({ Name = "Размеры" })
+local CheckBoxSection = BuildingsTab:CreateSection({ Name = "Чек Боксы" })
+local RemovesSection = BuildingsTab:CreateSection({ Name = "Удаление" })
+
+-- Настройки
+local cubeSize = 4
+local permPlatformSize = 4
+local tempPlatformSize = 4
+local anchored = true
+local transparency = 0
+
+-- Функция создания
+local function createCube(type, color, name, temporary)
+    local player = game.Players.LocalPlayer
+    local character = player.Character
+    if not character or not character:FindFirstChild("HumanoidRootPart") then return end
+    local hrp = character.HumanoidRootPart
+
+    local sizeVector = Vector3.new(cubeSize, cubeSize, cubeSize)
+    if name == "BLUDX_Platform_PERM" then
+        sizeVector = Vector3.new(permPlatformSize, 1, permPlatformSize)
+    elseif name == "BLUDX_Platform_TEMP" then
+        sizeVector = Vector3.new(tempPlatformSize, 1, tempPlatformSize)
+    end
+
+    local part = Instance.new("Part")
+    part.Size = sizeVector
+    part.Anchored = anchored
+    part.Transparency = transparency
+    part.Position = hrp.Position - Vector3.new(0, hrp.Size.Y / 2 + sizeVector.Y / 2, 0)
+    part.Color = color
+    part.Material = Enum.Material.SmoothPlastic
+    part.Name = name
+    part.Parent = workspace
+
+    if temporary then
+        task.delay(3, function()
+            if part and part.Parent then
+                part:Destroy()
+            end
+        end)
+    end
+end
+
+-- Переменная режима
+local placingEnabled = false
+local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+local player = game.Players.LocalPlayer
+local mouse = player:GetMouse()
+
+-- Raycast и создание куба по клику
+local function placeCubeAtMouse()
+    local unitRay = workspace.CurrentCamera:ScreenPointToRay(mouse.X, mouse.Y)
+    local raycastParams = RaycastParams.new()
+    raycastParams.FilterDescendantsInstances = {player.Character}
+    raycastParams.FilterType = Enum.RaycastFilterType.Blacklist
+
+    local rayResult = workspace:Raycast(unitRay.Origin, unitRay.Direction * 500, raycastParams)
+    if rayResult then
+        local part = Instance.new("Part")
+        part.Size = Vector3.new(cubeSize, cubeSize, cubeSize)
+        part.Anchored = anchored
+        part.Transparency = transparency
+        part.Position = rayResult.Position + Vector3.new(0, cubeSize / 2, 0)
+        part.Color = Color3.fromRGB(255, 200, 100)
+        part.Material = Enum.Material.SmoothPlastic
+        part.Name = "BLUDX_ClickCube"
+        part.Parent = workspace
+    end
+end
+
+-- Подключение к клику
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+    if not gameProcessed and placingEnabled and input.UserInputType == Enum.UserInputType.MouseButton1 then
+        placeCubeAtMouse()
     end
 end)
 
--- Name
-local NameFriend = ESPTab:NewToggle("Name только для друга", false, function(state)
-    FriendOnly.Name = state
-end)
-NameFriend:Hide()
-local NameToggle = ESPTab:NewToggle("Name", false, function(state)
-    ESP.Name = state
-    if state then
-        NameFriend:Show()
-    else
-        NameFriend:Set(false)
-        NameFriend:Hide()
-        FriendOnly.Name = false
+-- Toggle для режима создания кубов
+BuildSection:AddToggle({
+    Name = "Клик куб (ЛКМ)",
+    Flag = "Buildings_ClickCubeToggle",
+    Value = false,
+    Callback = function(state)
+        placingEnabled = state
     end
-end)
+})
 
--- Tracer
-local TracerFriend = ESPTab:NewToggle("Tracer только для друга", false, function(state)
-    FriendOnly.Tracer = state
-end)
-TracerFriend:Hide()
-local TracerToggle = ESPTab:NewToggle("Tracer", false, function(state)
-    ESP.Tracer = state
-    if state then
-        TracerFriend:Show()
-    else
-        TracerFriend:Set(false)
-        TracerFriend:Hide()
-        FriendOnly.Tracer = false
+
+BuildSection:AddButton({
+    Name = "Вечную платформу",
+    Callback = function()
+        createCube("perm", Color3.fromRGB(100, 100, 255), "BLUDX_Platform_PERM", false)
     end
-end)
+})
 
--- Health
-local HealthFriend = ESPTab:NewToggle("Health только для друга", false, function(state)
-    FriendOnly.Health = state
-end)
-HealthFriend:Hide()
-local HealthToggle = ESPTab:NewToggle("Health", false, function(state)
-    ESP.Health = state
-    if state then
-        HealthFriend:Show()
-    else
-        HealthFriend:Set(false)
-        HealthFriend:Hide()
-        FriendOnly.Health = false
+BuildSection:AddButton({
+    Name = "Временную платформу (3 сек)",
+    Callback = function()
+        createCube("temp", Color3.fromRGB(255, 100, 100), "BLUDX_Platform_TEMP", true)
     end
-end)
+})
 
--- Distance
-local DistanceFriend = ESPTab:NewToggle("Distance только для друга", false, function(state)
-    FriendOnly.Distance = state
-end)
-DistanceFriend:Hide()
-local DistanceToggle = ESPTab:NewToggle("Distance", false, function(state)
-    ESP.Distance = state
-    if state then
-        DistanceFriend:Show()
-    else
-        DistanceFriend:Set(false)
-        DistanceFriend:Hide()
-        FriendOnly.Distance = false
+-- Размеры
+SizeSection:AddSlider({
+    Name = "Размер клик куба",
+    Flag = "Buildings_CubeSize",
+    Value = 4,
+    Min = 1,
+    Max = 20,
+    Format = function(v)
+        return "Клик куба: " .. tostring(v)
+    end,
+    Callback = function(value)
+        cubeSize = value
     end
-end)
+})
+
+SizeSection:AddSlider({
+    Name = "Размер вечной платформы (XZ)",
+    Flag = "PermPlatform_SizeXZ",
+    Value = 4,
+    Min = 1,
+    Max = 20,
+    Format = function(v)
+        return "Вечной платформы: " .. tostring(v)
+    end,
+    Callback = function(value)
+        permPlatformSize = value
+    end
+})
+
+SizeSection:AddSlider({
+    Name = "Размеры временной платформы (XZ)",
+    Flag = "TempPlatform_SizeXZ",
+    Value = 4,
+    Min = 1,
+    Max = 20,
+    Format = function(v)
+        return "Временной платформы: " .. tostring(v)
+    end,
+    Callback = function(value)
+        tempPlatformSize = value
+    end
+})
+
+-- Чек боксы
+CheckBoxSection:AddToggle({
+    Name = "Закреплён",
+    Flag = "Buildings_Anchored",
+    Value = true,
+    Callback = function(state)
+        anchored = state
+    end
+})
+
+CheckBoxSection:AddSlider({
+    Name = "Прозрачность",
+    Flag = "Buildings_Transparency",
+    Value = 0,
+    Min = 0,
+    Max = 1,
+    Increment = 0.05,
+    Format = function(value)
+        return "Прозрачность " .. string.format("%.2f", value)
+    end,
+    Callback = function(value)
+        transparency = value
+    end
+})
+
+-- Удаление
+RemovesSection:AddButton({
+    Name = "Удалить клик кубы",
+    Callback = function()
+        for _, obj in ipairs(workspace:GetChildren()) do
+            if obj:IsA("Part") and obj.Name == "BLUDX_ClickCube" then
+                obj:Destroy()
+            end
+        end
+    end
+})
+
+RemovesSection:AddButton({
+    Name = "Удалить вечные платформы",
+    Callback = function()
+        for _, obj in ipairs(workspace:GetChildren()) do
+            if obj:IsA("Part") and obj.Name == "BLUDX_Platform_PERM" then
+                obj:Destroy()
+            end
+        end
+    end
+})
+
+RemovesSection:AddButton({
+    Name = "Удалить временные платформы",
+    Callback = function()
+        for _, obj in ipairs(workspace:GetChildren()) do
+            if obj:IsA("Part") and obj.Name == "BLUDX_Platform_TEMP" then
+                obj:Destroy()
+            end
+        end
+    end
+})
+
+RemovesSection:AddButton({
+    Name = "Удалить ВСЕ кубы",
+    Callback = function()
+        for _, obj in ipairs(workspace:GetChildren()) do
+            if obj:IsA("Part") and (obj.Name == "BLUDX_ClickCube" or obj.Name == "BLUDX_Platform_PERM" or obj.Name == "BLUDX_Platform_TEMP") then
+                obj:Destroy()
+            end
+        end
+    end
+})
 
 
--- local CL = ChangeLogTab:NewLabel("", "left")
-local ChangeLogTab = Init:NewTab("Change Logs")
--- 1.2
-local v1m2Section = ChangeLogTab:NewSection("1.2")
-local CL = ChangeLogTab:NewLabel("[+] Esp (Box, Name, Health, Distance, Tracer)", "left")
+-- Custom
 
--- 1.1
-local v1m1Section = ChangeLogTab:NewSection("1.1")
-local FMCL = ChangeLogTab:NewLabel("[+] Добавлено Friend Menu", "left")
-local FM1CL = ChangeLogTab:NewLabel("[+] Friend Menu: Teleport Friend", "left")
-local FM2CL = ChangeLogTab:NewLabel("[+] Friend Menu: Spectate Friend", "left")
-local FM3CL = ChangeLogTab:NewLabel("[+] Friend Menu: Delete Friend", "left")
+if game.PlaceId == 142823291 then
+    local MM2Tab = PepsisWorld:CreateTab({
+        Name = "MM2"
+    })
 
--- 1.0
-local v1m0Section = ChangeLogTab:NewSection("1.0")
-local NCCL = ChangeLogTab:NewLabel("[+] NoClip", "left")
-local IJCL = ChangeLogTab:NewLabel("[+] Infinity Jump", "left")
-local WSCL = ChangeLogTab:NewLabel("[+] Ползунок WalkSpeed", "left")
-local JPCL = ChangeLogTab:NewLabel("[+] Ползунок JumpPower", "left")
+    local MainMM2Section = MM2Tab:CreateSection({
+        Name = "Main"
+    })
 
-local FinishedLoading = Notif:Notify("Успешно: BLUDXHUB загружен полностью.", 4, "success")
+    MainMM2Section:AddButton({
+        Name = "MM2 - XHub Script",
+        Callback = function()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/Au0yX/Community/main/XhubMM2"))() 
+        end
+    })
+end
