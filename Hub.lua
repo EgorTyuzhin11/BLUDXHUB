@@ -76,6 +76,22 @@
             end
         end
     })
+-- // Hip Height -- Main -- Sliders
+    SlidersMain:AddSlider('HipHeight', {
+        Text = 'Высота от пола',
+        Default = 2,
+        Min = 2,
+        Max = 20,
+        Rounding = 0,
+        Tooltip = "Позволяет изменять вашу высоту",
+        Callback = function(HHt)
+            local char = LocalPlayer.Character
+            local hum = char and char:FindFirstChildOfClass("Humanoid")
+            if hum then
+                hum.HipHeight = HHt
+            end
+        end
+    })
 -- // JobID -- Main -- Server
     ServerMain:AddButton({
         Text = "Скопировать PlaceID",
@@ -165,6 +181,9 @@
         DoubleClick = true,
         Tooltip = 'Выключает меню и ватермарку',
         Func = function()
+            hum.JumpPower = 50
+            hum.WalkSpeed = 16
+            hum.HipHeight = 2
             Library:Unload()
         end
     })
