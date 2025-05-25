@@ -181,6 +181,8 @@
         DoubleClick = true,
         Tooltip = 'Выключает меню и ватермарку',
         Func = function()
+            local char = LocalPlayer.Character
+            local hum = char and char:FindFirstChildOfClass("Humanoid")
             hum.JumpPower = 50
             hum.WalkSpeed = 16
             hum.HipHeight = 2
