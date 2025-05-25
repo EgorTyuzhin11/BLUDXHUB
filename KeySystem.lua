@@ -1,4 +1,4 @@
-local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/jensonhirst/Orion/main/source')))()
+local OrionLib = loadstring(game:HttpGet('https://raw.githubusercontent.com/jensonhirst/Orion/main/source'))()
 
 -- Создание окна
 local Window = OrionLib:MakeWindow({
@@ -6,7 +6,7 @@ local Window = OrionLib:MakeWindow({
     HidePremium = false,
     SaveConfig = true,
     IntroEnabled = false,
-    ConfigFolder = "OrionTest"
+    ConfigFolder = "BludXKey"
 })
 
 -- Вкладка для ключ-системы
@@ -28,61 +28,71 @@ local KeyLoaded = false
 -- Загрузка ключа с обработкой ошибок
 local function LoadKey()
     local success, result = pcall(function()
-        return loadstring(game:HttpGet('https://raw.githubusercontent.com/EgorTyuzhin11/BludXKey/refs/heads/main/Key.lua?token=GHSAT0AAAAAADDW62TUKVGVBUIQZA34VVKS2BS3DGA'))()
+        local keyContent = game:HttpGet('https://raw.githubusercontent.com/EgorTyuzhin11/BludXHub/main/Key.txt', true)
+        -- Проверяем, что файл содержит только ключ (без лишнего кода)
+        if not keyContent:match("^[%w_]+$") then
+            error("Некорректный формат ключа")
+        end
+        return keyContent
     end)
     
     if success then
         CorrectKey = result
         KeyLoaded = true
         OrionLib:MakeNotification({
-            Name = "Ключ загружен",
-            Content = "Система готова к проверке ключей",
+            Name = "✅ Успешно",
+            Content = "Ключ успешно загружен",
             Image = "rbxassetid://4483345998",
-            Time = 5
+            Time = 3
         })
     else
         CorrectKey = "Ошибка загрузки"
+        KeyLoaded = false
         OrionLib:MakeNotification({
-            Name = "Ошибка!",
-            Content = "Не удалось загрузить ключ: "..tostring(result),
+            Name = "❌ Ошибка",
+            Content = "Не удалось загрузить ключ: "..tostring(result):sub(1, 50),
             Image = "rbxassetid://4483345998",
-            Time = 10
+            Time = 5
         })
     end
 end
-
--- Запускаем загрузку ключа при старте
-LoadKey()
 
 -- Функция проверки ключа
 local function CheckKey()
     if not KeyLoaded then
         OrionLib:MakeNotification({
-            Name = "Ошибка!",
-            Content = "Ключ еще не загружен, попробуйте позже",
-            Image = "rbxassetid://4483345998",
-            Time = 5
-        })
-        return
-    end
-    
-    if UserInputKey == CorrectKey then
-        OrionLib:MakeNotification({
-            Name = "Успешно!",
-            Content = "Правильный ключ! Запускаю скрипт...",
+            Name = "⚠️ Внимание",
+            Content = "Ключ еще не загружен. Нажмите 'Обновить'.",
             Image = "rbxassetid://4483345998",
             Time = 3
         })
+        return false
+    end
+    
+    -- Нормализация ввода (удаление пробелов, приведение к одному регистру)
+    local normalizedInput = UserInputKey:gsub("%s+", ""):upper()
+    local normalizedKey = CorrectKey:gsub("%s+", ""):upper()
+    
+    if normalizedInput == normalizedKey then
+        OrionLib:MakeNotification({
+            Name = "🔑 Успешно!",
+            Content = "Запуск через 3 секунды...",
+            Image = "rbxassetid://4483345998",
+            Time = 3
+        })
+        
         wait(3)
         OrionLib:Destroy()
-        loadstring(game:HttpGet('https://raw.githubusercontent.com/EgorTyuzhin11/BLUDXHUB/main/BludXHub.lua'))()
+        loadstring(game:HttpGet('https://raw.githubusercontent.com/EgorTyuzhin11/BludXHub/main/Hub.lua', true))()
+
     else
         OrionLib:MakeNotification({
-            Name = "Ошибка!",
-            Content = "Неверный ключ!",
+            Name = "❌ Отказано",
+            Content = "Неверный ключ доступа",
             Image = "rbxassetid://4483345998",
-            Time = 5
+            Time = 3
         })
+        return false
     end
 end
 
@@ -92,12 +102,15 @@ KeyTab:AddTextbox({
     Default = "",
     TextDisappear = false,
     Callback = function(Value)
-        if Value == "" or Value:match("^%s*$") then
+        -- Удаляем лишние пробелы в начале и конце
+        Value = Value:match("^%s*(.-)%s*$") or ""
+        
+        if Value == "" then
             OrionLib:MakeNotification({
-                Name = "Ошибка",
-                Content = "Поле ключа не может быть пустым!",
+                Name = "⚠️ Внимание",
+                Content = "Введите ключ для продолжения",
                 Image = "rbxassetid://4483345998",
-                Time = 5
+                Time = 3
             })
             return
         end
@@ -109,48 +122,47 @@ KeyTab:AddTextbox({
 
 -- Кнопки управления
 KeyTab:AddButton({
-    Name = "Обновить ключ",
-    Callback = function()
-        LoadKey()
-    end    
+    Name = "🔄 Обновить ключ",
+    Callback = LoadKey
 })
 
 KeyTab:AddButton({
-    Name = "Скопировать ключ",
+    Name = "📋 Скопировать ключ",
     Callback = function()
         if KeyLoaded then
             setclipboard(CorrectKey)
             OrionLib:MakeNotification({
-                Name = "Успешно",
-                Content = "Ключ скопирован в буфер обмена!",
+                Name = "✅ Успешно",
+                Content = "Ключ скопирован: "..CorrectKey,
                 Image = "rbxassetid://4483345998",
-                Time = 5
+                Time = 3
             })
         else
             OrionLib:MakeNotification({
-                Name = "Ошибка",
-                Content = "Ключ еще не загружен!",
+                Name = "⚠️ Внимание",
+                Content = "Сначала загрузите ключ",
                 Image = "rbxassetid://4483345998",
-                Time = 5
+                Time = 3
             })
         end
     end    
 })
 
 KeyTab:AddButton({
-    Name = "Закрыть интерфейс",
+    Name = "❌ Закрыть",
     Callback = function()
         OrionLib:Destroy()
     end    
 })
 
--- Уведомление о загрузке
+-- Первоначальная загрузка
 OrionLib:MakeNotification({
-    Name = "Система загружена",
-    Content = "Идет загрузка ключа...",
+    Name = "⚙️ Инициализация",
+    Content = "Загрузка системы...",
     Image = "rbxassetid://4483345998",
-    Time = 5
+    Time = 2
 })
 
--- Инициализация
+LoadKey()
+
 OrionLib:Init()
