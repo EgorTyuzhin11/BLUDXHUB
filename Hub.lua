@@ -171,7 +171,7 @@ ServerMain:AddButton({
 
 -- Server Inputs
 ServerMain:AddInput('PlaceID_Input', {
-    Default = tostring(game.PlaceId),
+    Default = "",
     Numeric = true,
     Finished = false,
     Text = 'Enter PlaceID',
@@ -186,7 +186,7 @@ ServerMain:AddInput('PlaceID_Input', {
 })
 
 ServerMain:AddInput('JobID_Input', {
-    Default = tostring(game.JobId),
+    Default = "",
     Numeric = false,
     Finished = false,
     Text = 'Enter JobID',
@@ -200,7 +200,7 @@ ServerMain:AddInput('JobID_Input', {
 })
 
 ServerMain:AddInput('ServerID_Input', {
-    Default = tostring(game.PlaceId .. ":" .. game.JobId),
+    Default = "",
     Numeric = false,
     Finished = false,
     Text = 'Enter ServerID',
@@ -213,6 +213,11 @@ ServerMain:AddInput('ServerID_Input', {
         end
     end
 })
+
+-- Custom Scripts
+if true then
+    
+end
 
 -- Teleport Buttons
 local savedCFrame = nil
@@ -243,6 +248,38 @@ TeleportMain:AddButton({
         end
     end
 })
+
+-- // ClickTP Toggle
+local ClickTP_Enabled = false
+
+-- Создание переключателя
+TeleportMain:AddToggle('ClickTP_Toggle', {
+    Text = 'Click TP (hold Left Ctrl)',
+    Default = false,
+    Tooltip = 'Teleport on click, when you pressed LeftCtrl',
+    Callback = function(state)
+        ClickTP_Enabled = state
+    end
+})
+
+-- ClickTP Logic
+local function onInput(input, gameProcessed)
+    if not ClickTP_Enabled then return end
+    if gameProcessed then return end
+    if input.UserInputType ~= Enum.UserInputType.MouseButton1 then return end
+    if not UIS:IsKeyDown(Enum.KeyCode.LeftControl) then return end
+
+    local mouse = LocalPlayer:GetMouse()
+    local targetPosition = mouse.Hit and mouse.Hit.Position
+
+    if targetPosition and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+        LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(targetPosition + Vector3.new(0, 3, 0))
+        Library:Notify("ClickTP Teleported!", 2)
+    end
+end
+
+UIS.InputBegan:Connect(onInput)
+
 
 -- Players Tab
 local selectedPlayer = nil
@@ -486,3 +523,5 @@ ButtonsDev:AddButton({
         Library:Unload()
     end
 })
+
+-- //
