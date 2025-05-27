@@ -216,7 +216,7 @@ ServerMain:AddInput('ServerID_Input', {
 
 -- Custom Scripts
 if true then
-    
+    loadstring(game:HttpGet('https://raw.githubusercontent.com/EgorTyuzhin11/BludXHub/refs/heads/main/Disaster_Survival.lua'))()
 end
 
 -- Teleport Buttons
